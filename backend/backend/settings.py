@@ -1,7 +1,8 @@
 from functools import lru_cache
-from typing import Optional, List
+from typing import List, Optional
 
-from pydantic import BaseSettings, AnyHttpUrl
+from pydantic import AnyHttpUrl, BaseSettings
+
 
 class Settings(BaseSettings):
     # AWS Credentials
@@ -13,6 +14,9 @@ class Settings(BaseSettings):
     # CORS Settings
     # '["http://localhost:3000"]' is the default value
     CORS_ORIGIN: List[AnyHttpUrl] = ["http://localhost:3000"]
+
+    # S3 Settings
+    S3_BUCKET_NAME: str = "data"
 
 
 @lru_cache()

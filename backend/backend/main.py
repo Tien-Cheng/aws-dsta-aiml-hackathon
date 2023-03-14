@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .settings import get_settings
 from .routers.router import router
+from .dependencies.storage import init_bucket
 
 app = FastAPI()
 settings = get_settings()
@@ -18,3 +19,7 @@ app.add_middleware(
 
 # Add the router to the app
 app.include_router(router)
+
+# Add startup events
+# Initialize S3 bucket
+app.add_event_handler("startup", init_bucket)
