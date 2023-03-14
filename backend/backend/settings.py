@@ -6,8 +6,8 @@ from pydantic import BaseSettings, AnyHttpUrl
 class Settings(BaseSettings):
     # AWS Credentials
     # should be automatically loaded from environment variables
-    AWS_ACCESS_KEY_ID: str
-    AWS_SECRET_ACCESS_KEY: str
+    AWS_ACCESS_KEY_ID: Optional[str] = None
+    AWS_SECRET_ACCESS_KEY: Optional[str] = None
     AWS_SESSION_TOKEN: Optional[str] = None
 
     # CORS Settings
