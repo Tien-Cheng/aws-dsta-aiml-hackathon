@@ -1,0 +1,8 @@
+{
+  "short_name": "BuYaoMafan",
+  "name": "AWS-DSTA-AIML-BuYaoMafan",
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
