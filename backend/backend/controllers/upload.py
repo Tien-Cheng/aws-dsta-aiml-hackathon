@@ -35,7 +35,7 @@ def upload_file_by_path(file_name: str, bucket: str, object_name=None) -> bool:
     return True
 
 
-@validate_arguments
+#@validate_arguments
 def upload_file_by_content(
     file_content: Union[bytes, io.BytesIO], bucket: str, object_name: str
 ) -> bool:

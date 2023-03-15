@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     CORS_ORIGIN: List[AnyHttpUrl] = ["http://localhost:3000"]
 
     # S3 Settings
-    S3_BUCKET_NAME: str = "data"
+    S3_BUCKET_NAME: str = "bymfdata"
 
 
 @lru_cache()
