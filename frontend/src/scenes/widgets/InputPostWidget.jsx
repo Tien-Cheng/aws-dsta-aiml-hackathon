@@ -30,6 +30,10 @@ const InputPostWidget = () => {
     const [text, setText] = useState("");
     const [isImage, setIsImage] = useState(false);
     const [image, setImage] = useState(null);
+    const [isVideo, setIsVideo] = useState(false);
+    const [video, setVideo] = useState(null);
+    const [isAudio, setIsAudio] = useState(false);
+    const [audio, setAudio] = useState(null);
     const { palette } = useTheme();
     const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
     const mediumMain = palette.neutral.mediumMain;
@@ -42,8 +46,16 @@ const InputPostWidget = () => {
             formData.append("description", text);
         } else if (isImage) {
             formData.append("type", "image");
-            formData.append("picture", image);
-            formData.append("picturePath", image.name);
+            formData.append("file", image);
+            formData.append("filePath", image.name);
+        } else if (isVideo) {
+            formData.append("type", "video");
+            formData.append("file", video);
+            formData.append("filePath", video.name);
+        } else if (isAudio) {
+            formData.append("type", "audio");
+            formData.append("file", audio);
+            formData.append("filePath", audio.name);
         }
 
         const response = await fetch(`http://localhost:8888/posts`, {
@@ -52,8 +64,10 @@ const InputPostWidget = () => {
         });
         const posts = await response.json();
         dispatch(setPosts({ posts }));
-        setImage(null);
         setText("");
+        setImage(null);
+        setVideo(null);
+        setAudio(null);
     };
   
     return (
@@ -62,6 +76,8 @@ const InputPostWidget = () => {
                 <FlexBetween gap="0.25rem" onClick={() => {
                     setIsText(!isText)
                     setIsImage(false)
+                    setIsVideo(false)
+                    setIsAudio(false)
                     }}>
                     <NotesOutlined sx={{ color: mediumMain }} />
                     <Typography 
@@ -75,6 +91,8 @@ const InputPostWidget = () => {
                 <FlexBetween gap="0.25rem" onClick={() => {
                     setIsText(false)
                     setIsImage(!isImage)
+                    setIsVideo(false)
+                    setIsAudio(false)
                     }}>
                     <ImageOutlined sx={{ color: mediumMain }} />
                     <Typography
@@ -87,7 +105,12 @@ const InputPostWidget = () => {
 
                 {isNonMobileScreens ? (
                 <>
-                    <FlexBetween gap="0.25rem">
+                    <FlexBetween gap="0.25rem" onClick={() => {
+                        setIsText(false)
+                        setIsImage(false)
+                        setIsVideo(!isVideo)
+                        setIsAudio(false)
+                        }}>
                     <VideocamOutlined sx={{ color: mediumMain }} />
                     <Typography 
                         color={mediumMain}
@@ -97,7 +120,12 @@ const InputPostWidget = () => {
                     </Typography>
                     </FlexBetween>
 
-                    <FlexBetween gap="0.25rem">
+                    <FlexBetween gap="0.25rem" onClick={() => {
+                        setIsText(false)
+                        setIsImage(false)
+                        setIsVideo(false)
+                        setIsAudio(!isAudio)
+                        }}>
                     <MicOutlined sx={{ color: mediumMain }} />
                     <Typography 
                         color={mediumMain}
@@ -120,6 +148,7 @@ const InputPostWidget = () => {
                 <FlexBetween gap="1.5rem">
                     <InputBase
                     placeholder="Enter text here..."
+                    multiline={true}
                     onChange={(e) => setText(e.target.value)}
                     value={text}
                     sx={{
@@ -139,18 +168,18 @@ const InputPostWidget = () => {
                 p="1rem"
                 >
                 <Dropzone
-                    acceptedFiles=".jpg,.jpeg,.png"
+                    accept=".jpg,.jpeg,.png"
                     multiple={false}
                     onDrop={(acceptedFiles) => setImage(acceptedFiles[0])}
                 >
                     {({ getRootProps, getInputProps }) => (
                     <FlexBetween>
                         <Box
-                        {...getRootProps()}
-                        border={`2px dashed ${palette.primary.main}`}
-                        p="1rem"
-                        width="100%"
-                        sx={{ "&:hover": { cursor: "pointer" } }}
+                            {...getRootProps()}
+                            border={`2px dashed ${palette.primary.main}`}
+                            p="1rem"
+                            width="100%"
+                            sx={{ "&:hover": { cursor: "pointer" } }}
                         >
                         <input {...getInputProps()} />
                         {!image ? (
@@ -175,15 +204,103 @@ const InputPostWidget = () => {
                 </Dropzone>
                 </Box>
             )}
+            {isVideo && (
+                <Box
+                border={`1px solid ${medium}`}
+                borderRadius="5px"
+                mt="1rem"
+                p="1rem"
+                >
+                <Dropzone
+                    accept=".avi,.wmv,.mp4"
+                    multiple={false}
+                    onDrop={(acceptedFiles) => setVideo(acceptedFiles[0])}
+                >
+                    {({ getRootProps, getInputProps }) => (
+                    <FlexBetween>
+                        <Box
+                            {...getRootProps()}
+                            border={`2px dashed ${palette.primary.main}`}
+                            p="1rem"
+                            width="100%"
+                            sx={{ "&:hover": { cursor: "pointer" } }}
+                        >
+                        <input {...getInputProps()} />
+                        {!video ? (
+                            <p>Add Video Here</p>
+                        ) : (
+                            <FlexBetween>
+                            <Typography>{video.name}</Typography>
+                            <EditOutlined />
+                            </FlexBetween>
+                        )}
+                        </Box>
+                        {video && (
+                        <IconButton
+                            onClick={() => setVideo(null)}
+                            sx={{ width: "15%" }}
+                        >
+                            <DeleteOutlined />
+                        </IconButton>
+                        )}
+                    </FlexBetween>
+                    )}
+                </Dropzone>
+                </Box>
+            )}
+            {isAudio && (
+                <Box
+                border={`1px solid ${medium}`}
+                borderRadius="5px"
+                mt="1rem"
+                p="1rem"
+                >
+                <Dropzone
+                    accept=".wav,.mp3"
+                    multiple={false}
+                    onDrop={(acceptedFiles) => setAudio(acceptedFiles[0])}
+                >
+                    {({ getRootProps, getInputProps }) => (
+                    <FlexBetween>
+                        <Box
+                            {...getRootProps()}
+                            border={`2px dashed ${palette.primary.main}`}
+                            p="1rem"
+                            width="100%"
+                            sx={{ "&:hover": { cursor: "pointer" } }}
+                        >
+                        <input {...getInputProps()} />
+                        {!audio ? (
+                            <p>Add Audio Here</p>
+                        ) : (
+                            <FlexBetween>
+                            <Typography>{audio.name}</Typography>
+                            <EditOutlined />
+                            </FlexBetween>
+                        )}
+                        </Box>
+                        {audio && (
+                        <IconButton
+                            onClick={() => setAudio(null)}
+                            sx={{ width: "15%" }}
+                        >
+                            <DeleteOutlined />
+                        </IconButton>
+                        )}
+                    </FlexBetween>
+                    )}
+                </Dropzone>
+                </Box>
+            )}
 
             <FlexBetween justifyItems="center">
                 <Button
-                    disabled={!((text && isText) || (image && isImage))}
+                    disabled={!((text && isText) || (image && isImage) || (video && isVideo) || (audio && isAudio))}
                     onClick={handlePost}
                     sx={{
                         color: palette.background.alt,
                         backgroundColor: palette.primary.main,
-                        borderRadius: "3rem",
+                        borderRadius: "0.5rem",
                         mt: "1rem",
                         width: "100%"
                     }}

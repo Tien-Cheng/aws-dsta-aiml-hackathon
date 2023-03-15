@@ -11,10 +11,11 @@ const AllPostsWidget = () => {
                 // FIELDS DEPENDENT ON RETURN FROM AI/ML IN JSON FORMAT (backend)
             description,
             location
-            }) => (
+            }, index) => (
             <PostWidget
                 description={description}
                 location={location}
+                key={index}
             />
             )
         )}
