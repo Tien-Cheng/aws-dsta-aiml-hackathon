@@ -1,18 +1,13 @@
-import shutil
-from fastapi import APIRouter, UploadFile, File, Request
-from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse
+from fastapi import APIRouter, UploadFile, File
 from backend.models.models import *
 from backend.controllers.upload import *
 from backend.controllers.predict_text import *
 
 router = APIRouter()
 
-frontend = Jinja2Templates(directory="..\\frontend\\public")
-
-@router.get("/", response_class=HTMLResponse)
-def root(request: Request):
-    return frontend.TemplateResponse("index.html", {"request": request})
+@router.get("/")
+def ping():
+    return {"message": "Hello World"}
 
 @router.post("/text")
 def submit_text(text: Text):
