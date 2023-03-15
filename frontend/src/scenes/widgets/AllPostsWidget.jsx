@@ -7,14 +7,9 @@ const AllPostsWidget = () => {
   return (
     <>
         {posts.length > 0 && posts.slice(0).reverse().map(
-            ({
-                // FIELDS DEPENDENT ON RETURN FROM AI/ML IN JSON FORMAT (backend)
-            description,
-            location
-            }, index) => (
+            (post, index) => (
             <PostWidget
-                description={description}
-                location={location}
+                description={post}
                 key={index}
             />
             )

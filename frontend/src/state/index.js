@@ -13,7 +13,7 @@ export const checkerSlice = createSlice({
             state.mode = state.mode === "light" ? "dark" : "light";
         },
         setPosts: (state, action) => {
-            state.posts = state.posts.concat(action.payload.posts);
+            state.posts = state.posts.concat(action.payload);
         }
     },
 });

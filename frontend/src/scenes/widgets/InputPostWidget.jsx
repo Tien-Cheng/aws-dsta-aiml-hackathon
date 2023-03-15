@@ -5,7 +5,8 @@ import {
     MicOutlined,
     MoreHorizOutlined,
     VideocamOutlined,
-    NotesOutlined
+    NotesOutlined,
+    LinkOutlined
 } from "@mui/icons-material";
 import {
     Box,
@@ -34,6 +35,8 @@ const InputPostWidget = () => {
     const [video, setVideo] = useState(null);
     const [isAudio, setIsAudio] = useState(false);
     const [audio, setAudio] = useState(null);
+    const [isUrl, setIsUrl] = useState(false);
+    const [url, setUrl] = useState(null);
     const { palette } = useTheme();
     const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
     const mediumMain = palette.neutral.mediumMain;
@@ -41,24 +44,29 @@ const InputPostWidget = () => {
   
     const handlePost = async () => {
         const formData = new FormData();
+        let endpoint = "";
+
         if (isText) {
-            formData.append("type", "text");
-            formData.append("description", text);
+            formData.append("text", text);
+            endpoint = "text";
         } else if (isImage) {
-            formData.append("type", "image");
             formData.append("file", image);
             formData.append("filePath", image.name);
+            endpoint = "image";
         } else if (isVideo) {
-            formData.append("type", "video");
             formData.append("file", video);
             formData.append("filePath", video.name);
+            endpoint = "video";
         } else if (isAudio) {
-            formData.append("type", "audio");
             formData.append("file", audio);
             formData.append("filePath", audio.name);
+            endpoint = "audio";
+        } else if (isUrl) {
+            formData.append("url", url);
+            endpoint = "url";
         }
 
-        const response = await fetch(`http://localhost:8888/posts`, {
+        const response = await fetch(`http://localhost:3000/predict/` + endpoint, {
             method: "POST",
             body: formData
         });
@@ -68,6 +76,7 @@ const InputPostWidget = () => {
         setImage(null);
         setVideo(null);
         setAudio(null);
+        setUrl("");
     };
   
     return (
@@ -78,6 +87,7 @@ const InputPostWidget = () => {
                     setIsImage(false)
                     setIsVideo(false)
                     setIsAudio(false)
+                    setIsUrl(false)
                     }}>
                     <NotesOutlined sx={{ color: mediumMain }} />
                     <Typography 
@@ -93,6 +103,7 @@ const InputPostWidget = () => {
                     setIsImage(!isImage)
                     setIsVideo(false)
                     setIsAudio(false)
+                    setIsUrl(false)
                     }}>
                     <ImageOutlined sx={{ color: mediumMain }} />
                     <Typography
@@ -110,6 +121,7 @@ const InputPostWidget = () => {
                         setIsImage(false)
                         setIsVideo(!isVideo)
                         setIsAudio(false)
+                        setIsUrl(false)
                         }}>
                     <VideocamOutlined sx={{ color: mediumMain }} />
                     <Typography 
@@ -125,6 +137,7 @@ const InputPostWidget = () => {
                         setIsImage(false)
                         setIsVideo(false)
                         setIsAudio(!isAudio)
+                        setIsUrl(false)
                         }}>
                     <MicOutlined sx={{ color: mediumMain }} />
                     <Typography 
@@ -132,6 +145,22 @@ const InputPostWidget = () => {
                         sx={{ "&:hover": { cursor: "pointer", color: medium } }}
                     >
                         Audio
+                    </Typography>
+                    </FlexBetween>
+
+                    <FlexBetween gap="0.25rem" onClick={() => {
+                        setIsText(false)
+                        setIsImage(false)
+                        setIsVideo(false)
+                        setIsAudio(false)
+                        setIsUrl(!isUrl)
+                        }}>
+                    <LinkOutlined sx={{ color: mediumMain }} />
+                    <Typography 
+                        color={mediumMain}
+                        sx={{ "&:hover": { cursor: "pointer", color: medium } }}
+                    >
+                        URL
                     </Typography>
                     </FlexBetween>
                 </>
@@ -292,10 +321,25 @@ const InputPostWidget = () => {
                 </Dropzone>
                 </Box>
             )}
+            {isUrl && (
+                <FlexBetween gap="1.5rem">
+                    <InputBase
+                    placeholder="Enter URL here..."
+                    onChange={(e) => setUrl(e.target.value)}
+                    value={url}
+                    sx={{
+                        width: "100%",
+                        backgroundColor: palette.neutral.light,
+                        borderRadius: "1rem",
+                        padding: "1rem 2rem",
+                    }}
+                    />
+                </FlexBetween>
+            )}
 
             <FlexBetween justifyItems="center">
                 <Button
-                    disabled={!((text && isText) || (image && isImage) || (video && isVideo) || (audio && isAudio))}
+                    disabled={!((text && isText) || (image && isImage) || (video && isVideo) || (audio && isAudio) || (url && isUrl))}
                     onClick={handlePost}
                     sx={{
                         color: palette.background.alt,
