@@ -1,7 +1,8 @@
 from fastapi import APIRouter
 
 from backend.controllers.social_media import social_media_integrator_factory
-from backend.models.models import TelegramLogin2FAModel, TelegramLogin2FARequestModel
+from backend.models.models import (TelegramLogin2FAModel,
+                                   TelegramLogin2FARequestModel)
 
 router = APIRouter(
     prefix="/telegram",
