@@ -66,7 +66,7 @@ const InputPostWidget = () => {
             endpoint = "url";
         }
 
-        const response = await fetch(`http://localhost:3000/predict/` + endpoint, {
+        const response = await fetch(`http://localhost:8080/predict/` + endpoint, {
             method: "POST",
             body: formData
         });
