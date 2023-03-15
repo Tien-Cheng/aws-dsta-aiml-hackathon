@@ -67,7 +67,7 @@ def predict_video(filename: str, bucket: str, timeout: int = 3600) -> str:
             if detections["JobStatus"] != "IN_PROGRESS":
                 detect_done = True
 
-    result = "TRANSCRIPT:"
+    result = "TRANSCRIPT: "
     # Process transcript
     s3_client = get_s3_client()
     with NamedTemporaryFile() as tmp:
@@ -78,7 +78,7 @@ def predict_video(filename: str, bucket: str, timeout: int = 3600) -> str:
         for transcript in transcripts:
             result += transcript["transcript"] + " "
 
-    result += "DETECTED TEXT (OCR):"
+    result += "DETECTED TEXT (OCR): "
     for text_det in detections["TextDetections"]:
         text = text_det["TextDetection"]["DetectedText"]
         result += text + " "
