@@ -45,13 +45,11 @@ class SocialMediaPostModel(InputModel):
     children: Optional[List["SocialMediaPostModel"]] = None
 
 
-class PredictionRequestURL(BaseModel):
-    url: AnyHttpUrl
+class ClassResponse(BaseModel):
+    Name: str
+    Score: float
 
 
-class PredictionResponse(BaseModel):
-    # TODO
-    pass
-
-class Text(BaseModel):
+class PredictionResponseModel(BaseModel):
     text: str
+    classes: List[ClassResponse]
