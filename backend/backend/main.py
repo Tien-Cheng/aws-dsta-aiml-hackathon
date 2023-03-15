@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .settings import get_settings
-from .routers.router import router
 from .dependencies.storage import init_bucket
+from .routers.router import router
+from .settings import get_settings
 
 app = FastAPI()
 settings = get_settings()
