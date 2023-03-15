@@ -8,10 +8,12 @@ def seg_text(text):
 
 def test_text(text):
     text_list=seg_text(text)
-    sentiment_dict={}
+    result=[]
     comprehend = boto3.client(service_name='comprehend')
+    endpointarn="arn:aws:comprehend:us-east-1:087582090241:document-classifier-endpoint/toxic-comments-endpoint"
     for i in text_list:
-        response=comprehend.detect_sentiment(Text=i, LanguageCode='en')
-        sentiment_dict[i]={response['Sentiment']}
-    print(sentiment_dict)
-    return sentiment_dict
+        response=comprehend.classify_document(Text=i, EndpointArn=endpointarn)
+        result.append({"text":i, "classes":response["Labels"]})
+
+    print(result)
+    return result
