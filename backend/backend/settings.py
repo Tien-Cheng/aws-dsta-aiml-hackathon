@@ -7,6 +7,7 @@ from pydantic import AnyHttpUrl, BaseSettings
 class Settings(BaseSettings):
     # AWS Credentials
     # should be automatically loaded from environment variables
+    AWS_DEFAULT_REGION: str = "us-east-1"
     AWS_ACCESS_KEY_ID: Optional[str] = None
     AWS_SECRET_ACCESS_KEY: Optional[str] = None
     AWS_SESSION_TOKEN: Optional[str] = None
@@ -32,6 +33,10 @@ class Settings(BaseSettings):
     ## Telegram
     TELEGRAM_API_ID: int
     TELEGRAM_API_HASH: str
+
+
+    # Misc
+    DEBUG_MOCK_CLASSIFY: bool = False
 
     class Config:
         env_file = ".env.prod"
