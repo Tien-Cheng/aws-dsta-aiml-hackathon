@@ -3,8 +3,10 @@ from os import remove
 from os.path import basename
 from tempfile import NamedTemporaryFile
 
+from fastapi import status
 from telethon import TelegramClient
 from telethon.tl.custom.message import Message
+from fastapi.exceptions import HTTPException
 
 from backend.controllers.upload import upload_file_by_path
 from backend.models.models import MediaModel, SocialMediaPostModel
@@ -56,7 +58,15 @@ class TelegramIntegrator(SocialMediaIntegrator):
         async with self.client:
             # self.logger.info("Getting post from: %s", post_url)
             await self.client.get_dialogs()
-            post: Message = await self.client.get_messages(channel_id, ids=int(post_id))
+            try:
+                post: Message = await self.client.get_messages(
+                    channel_id, ids=int(post_id)
+                )
+            except ValueError as err:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail=f"Post with id {post_id} in channel with id {channel_id} not found",
+                ) from err
             self.logger.info("Retrieved post")
 
             # Get metadata
