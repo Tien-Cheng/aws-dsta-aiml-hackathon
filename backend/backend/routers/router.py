@@ -1,4 +1,7 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, UploadFile, File
+from backend.models.models import *
+from backend.controllers.upload import *
+from backend.controllers.predict_text import *
 
 from backend.controllers.predict_social_media import \
     predict_from_social_media_post
@@ -40,3 +43,13 @@ async def predict_from_url(url: PredictionRequestURL):
         "url": processed_url,
         "result": result,
     }
+@router.ptranscribeost("/text")
+def submit_text(text: Text):
+    #call predict_text.py
+    return test_text(text.text)
+
+@router.post("/video")
+def submit_video(file: UploadFile=File(...)):
+    upload_file_by_content(file.file,'bymfdata',file.filename)
+    #call predict_video.py
+    return {"file_name": file.filename}

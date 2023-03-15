@@ -52,3 +52,6 @@ class PredictionRequestURL(BaseModel):
 class PredictionResponse(BaseModel):
     # TODO
     pass
+
+class Text(BaseModel):
+    text: str
