@@ -1,4 +1,6 @@
 .env.prod
+# Telegram session file
+*.session
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
