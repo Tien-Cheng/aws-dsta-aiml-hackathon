@@ -13,12 +13,16 @@ class Settings(BaseSettings):
 
     # CORS Settings
     # '["http://localhost:3000"]' is the default value
-    CORS_ORIGIN: List[AnyHttpUrl] = ["http://localhost:3000", "https://test.d22pi7rog234uz.amplifyapp.com"]
+    CORS_ORIGIN: List[AnyHttpUrl] = [
+        "http://localhost:3000",
+        "https://test.d22pi7rog234uz.amplifyapp.com",
+    ]
 
     # AI Settings
     ## number of words to use for the context
     SEGMENT_CHUNK_SIZE: int = 64
     TEXT_ENDPOINT: str = "arn:aws:comprehend:us-east-1:087582090241:document-classifier-endpoint/toxic-comments-endpoint"
+    VIDEO_REKOGNITION_TIMEOUT: int = 60 * 10  # 10 minutes
 
     # S3 Settings
     S3_BUCKET_NAME: str = "buyaomafandata"
