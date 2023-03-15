@@ -13,8 +13,8 @@ class SocialMediaIntegrator(ABC):
         self.logger = logging.getLogger(__name__)
 
     @abstractmethod
-    async def get_post_by_id(self, post_id: str) -> SocialMediaPostModel:
-        """Get post by id"""
+    async def get_post_by_url(self, post_url: str) -> SocialMediaPostModel:
+        """Get post by url"""
         pass
 
     @abstractmethod
