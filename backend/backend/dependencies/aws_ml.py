@@ -1,7 +1,6 @@
 from functools import lru_cache
 
 import boto3
-
 from botocore.config import Config
 
 from backend.settings import get_settings
@@ -9,11 +8,9 @@ from backend.settings import get_settings
 settings = get_settings()
 
 BOTO_CONFIG = Config(
-    retries={
-        "max_attempts": settings.API_RETRY_ATTEMPTS,
-        "mode" : "standard"
-    }
+    retries={"max_attempts": settings.API_RETRY_ATTEMPTS, "mode": "standard"}
 )
+
 
 @lru_cache()
 def get_comprehend_client():
@@ -22,6 +19,7 @@ def get_comprehend_client():
         config=BOTO_CONFIG,
     )
 
+
 @lru_cache()
 def get_rekognition_client():
     return boto3.client(
@@ -29,12 +27,14 @@ def get_rekognition_client():
         config=BOTO_CONFIG,
     )
 
+
 @lru_cache()
 def get_transcribe_client():
     return boto3.client(
         "transcribe",
         config=BOTO_CONFIG,
     )
+
 
 @lru_cache()
 def get_translate_client():
