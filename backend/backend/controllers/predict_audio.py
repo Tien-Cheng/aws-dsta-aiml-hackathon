@@ -48,7 +48,7 @@ def predict_audio(filename: str, bucket: str, timeout: int = 3600) -> str:
                 != "IN_PROGRESS"
             ):
                 transcribe_done = True
-    result = "TRANSCRIPT:"
+    result = ""
     # Process transcript
     s3_client = get_s3_client()
     with NamedTemporaryFile() as tmp:
