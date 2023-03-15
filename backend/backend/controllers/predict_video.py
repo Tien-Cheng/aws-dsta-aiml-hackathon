@@ -1,7 +1,7 @@
+from json import loads
 from tempfile import NamedTemporaryFile
 from time import sleep
 from uuid import uuid4
-from json import loads
 
 from fastapi import status
 from fastapi.exceptions import HTTPException
