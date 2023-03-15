@@ -62,6 +62,8 @@ def extract_information_from_post(post: SocialMediaPostModel) -> str:
 
 @validate_arguments
 async def predict_from_social_media_post(url: str, platform: Optional[str] = None):
+    # Remove query parameters from url
+    url = url.split("?")[0]
     # Attempt to figure out the platform from the url
     if platform is None:
         platform = get_platform_from_url(url)
