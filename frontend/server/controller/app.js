@@ -27,7 +27,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 /* ENDPOINTS */
-app.post('/text', upload.single("file"), function(req,res){
+app.post('/predict/text', upload.single("file"), function(req,res){
     console.log(req.body)
 
     // return res.status(200).send([{'description': req.body.text}]);
@@ -137,7 +137,7 @@ app.post('/text', upload.single("file"), function(req,res){
     ]);
 });
 
-app.post('/video', upload.single("file"), function(req,res){
+app.post('/predict/video', upload.single("file"), function(req,res){
   console.log(req.body)
 
   // return res.status(200).send([{'description': req.body.text}]);
