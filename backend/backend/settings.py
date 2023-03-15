@@ -13,7 +13,10 @@ class Settings(BaseSettings):
 
     # CORS Settings
     # '["http://localhost:3000"]' is the default value
-    CORS_ORIGIN: List[AnyHttpUrl] = ["http://localhost:3000", "https://test.d22pi7rog234uz.amplifyapp.com"]
+    CORS_ORIGIN: List[AnyHttpUrl] = [
+        "http://localhost:3000",
+        "https://test.d22pi7rog234uz.amplifyapp.com",
+    ]
 
     # AI Settings
     ## number of words to use for the context

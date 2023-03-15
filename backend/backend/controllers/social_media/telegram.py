@@ -4,9 +4,9 @@ from os.path import basename
 from tempfile import NamedTemporaryFile
 
 from fastapi import status
+from fastapi.exceptions import HTTPException
 from telethon import TelegramClient
 from telethon.tl.custom.message import Message
-from fastapi.exceptions import HTTPException
 
 from backend.controllers.upload import upload_file_by_path
 from backend.models.models import MediaModel, SocialMediaPostModel
