@@ -16,14 +16,3 @@ class SocialMediaIntegrator(ABC):
     async def get_post_by_url(self, post_url: str) -> SocialMediaPostModel:
         """Get post by url"""
         pass
-
-    @abstractmethod
-    async def save_media_to_s3(
-        self, post: SocialMediaPostModel
-    ) -> SocialMediaPostModel:
-        """Save media to s3
-
-        This should attempt to download any media
-        associated with the post and save it to s3.
-        """
-        pass

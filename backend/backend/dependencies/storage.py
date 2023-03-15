@@ -19,7 +19,9 @@ def init_bucket() -> bool:
     s3_client = get_s3_client()
 
     try:
-        s3_client.create_bucket(Bucket=settings.S3_BUCKET_NAME)
+        s3_client.create_bucket(
+            Bucket=settings.S3_BUCKET_NAME,
+        )
     except ClientError as err:
         logging.error(err)
         return False

@@ -4,13 +4,29 @@ from typing import List, Optional, Union
 from pydantic import AnyHttpUrl, BaseModel
 
 
+class TelegramLogin2FARequestModel(BaseModel):
+    phone_number: str
+
+
+class TelegramLogin2FAModel(BaseModel):
+    phone_number: str
+    code: str
+
+
+class MediaModel(BaseModel):
+    file_name: str
+    file_type: Optional[str]
+    s3_path: Optional[str]
+    blob: Optional[Union[bytes, str]]
+
+
 class InputModel(BaseModel):
     # e.g post text, video description, etc.
     text: Optional[str] = None
     # e.g youtube video title
     title: Optional[str] = None
-    # s3 paths to the media
-    media_paths: Optional[List[str]] = None
+    # media associated with the post
+    media: Optional[List[MediaModel]] = None
 
 
 class SocialMediaPostModel(InputModel):
@@ -27,6 +43,10 @@ class SocialMediaPostModel(InputModel):
     # any responses to the original post
     # e.g comments, replies, etc
     children: Optional[List["SocialMediaPostModel"]] = None
+
+
+class PredictionRequestURL(BaseModel):
+    url: AnyHttpUrl
 
 
 class PredictionResponse(BaseModel):

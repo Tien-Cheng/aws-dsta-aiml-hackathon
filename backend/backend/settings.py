@@ -16,7 +16,15 @@ class Settings(BaseSettings):
     CORS_ORIGIN: List[AnyHttpUrl] = ["http://localhost:3000"]
 
     # S3 Settings
-    S3_BUCKET_NAME: str = "data"
+    S3_BUCKET_NAME: str = "buyaomafandata"
+
+    # Integrations
+    ## Telegram
+    TELEGRAM_API_ID: int
+    TELEGRAM_API_HASH: str
+
+    class Config:
+        env_file = ".env.prod"
 
 
 @lru_cache()
