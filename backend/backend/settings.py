@@ -15,6 +15,11 @@ class Settings(BaseSettings):
     # '["http://localhost:3000"]' is the default value
     CORS_ORIGIN: List[AnyHttpUrl] = ["http://localhost:3000"]
 
+    # AI Settings
+    ## number of words to use for the context
+    SEGMENT_CHUNK_SIZE: int = 64
+    TEXT_ENDPOINT: str = "arn:aws:comprehend:us-east-1:087582090241:document-classifier-endpoint/toxic-comments-endpoint"
+
     # S3 Settings
     S3_BUCKET_NAME: str = "buyaomafandata"
 
