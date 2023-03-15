@@ -6,7 +6,7 @@ from typing import Dict, List
 from botocore.exceptions import ClientError
 from pydantic import validate_arguments
 
-from backend.dependencies.comprehend import get_comprehend_client
+from backend.dependencies.aws_ml import get_comprehend_client
 
 logger = logging.getLogger(__name__)
 
@@ -26,19 +26,7 @@ def predict_text(chunk: str, chunk_size: int, endpoint: str) -> List[Dict]:
     result = []
     logger.info("Sending %s segments to Comprehend", len(segments))
     for chunk in segments:
-        attempts = 0
-        while True:
-            try:
-                response = comprehend.classify_document(Text=chunk, EndpointArn=endpoint)
-                break
-            except ClientError as err:
-                attempts += 1
-                logger.info("Being rate limited by Comprehend")
-                logger.info("Sleeping for 5 seconds")
-                sleep(5)
-                if attempts > 3:
-                    logger.error("Failed to classify text: %s", str(err))
-                    raise err
+        response = comprehend.classify_document(Text=chunk, EndpointArn=endpoint)
         result.append({"text": chunk, "classes": response["Labels"]})
     logger.info("Predicted: %s", dumps(result))
     return result

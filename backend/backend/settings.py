@@ -23,6 +23,7 @@ class Settings(BaseSettings):
     SEGMENT_CHUNK_SIZE: int = 64
     TEXT_ENDPOINT: str = "arn:aws:comprehend:us-east-1:087582090241:document-classifier-endpoint/toxic-comments-endpoint"
     VIDEO_REKOGNITION_TIMEOUT: int = 60 * 10  # 10 minutes
+    API_RETRY_ATTEMPTS: int = 10
 
     # S3 Settings
     S3_BUCKET_NAME: str = "buyaomafandata"

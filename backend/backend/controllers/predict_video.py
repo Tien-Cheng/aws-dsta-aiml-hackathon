@@ -1,10 +1,9 @@
 from time import sleep
 
-import boto3
 from fastapi import status
 from fastapi.exceptions import HTTPException
 
-from backend.dependencies.rekognition import get_rekognition_client
+from backend.dependencies.aws_ml import get_rekognition_client
 
 
 def predict_video(filename: str, bucket: str, timeout: int = 3600) -> str:
