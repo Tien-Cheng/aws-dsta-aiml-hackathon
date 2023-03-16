@@ -41,7 +41,7 @@ def predict_text(text: str, chunk_size: int, endpoint: str) -> List[Dict]:
         # NOTE: Use to avoid rate limit when developing
         if settings.DEBUG_MOCK_CLASSIFY:
             response = {"Labels": [{"Name": "non_hate", "Score": 0.9}]}
-        else: 
+        else:
             response = comprehend.classify_document(Text=chunk, EndpointArn=endpoint)
         result.append({"text": chunk, "classes": response["Labels"]})
     logger.info("Predicted: %s", dumps(result))

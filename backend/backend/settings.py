@@ -34,7 +34,6 @@ class Settings(BaseSettings):
     TELEGRAM_API_ID: int
     TELEGRAM_API_HASH: str
 
-
     # Misc
     DEBUG_MOCK_CLASSIFY: bool = False
 
