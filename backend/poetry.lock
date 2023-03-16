@@ -584,10 +584,21 @@ h11 = ">=0.8"
 [package.extras]
 standard = ["colorama (>=0.4)", "httptools (>=0.5.0)", "python-dotenv (>=0.13)", "pyyaml (>=5.1)", "uvloop (>=0.14.0,!=0.15.0,!=0.15.1)", "watchfiles (>=0.13)", "websockets (>=10.4)"]
 
+[[package]]
+name = "youtube-transcript-api"
+version = "0.5.0"
+description = "This is an python API which allows you to get the transcripts/subtitles for a given YouTube video. It also works for automatically generated subtitles, supports translating subtitles and it does not require a headless browser, like other selenium based solutions do!"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+requests = "*"
+
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "ebbe34c2e771b0ab51fcb4b89b72f5eb2190952552f34155b84efd1727729cab"
+content-hash = "e444cb9fe7fdadb070cd27296a4d92d348aaf65a8f5c1b9af333df3a632ea8a5"
 
 [metadata.files]
 anyio = [
@@ -930,4 +941,8 @@ urllib3 = [
 uvicorn = [
     {file = "uvicorn-0.21.0-py3-none-any.whl", hash = "sha256:e69e955cb621ae7b75f5590a814a4fcbfb14cb8f44a36dfe3c5c75ab8aee3ad5"},
     {file = "uvicorn-0.21.0.tar.gz", hash = "sha256:8635a388062222082f4b06225b867b74a7e4ef942124453d4d1d1a5cb3750932"},
+]
+youtube-transcript-api = [
+    {file = "youtube_transcript_api-0.5.0-py3-none-any.whl", hash = "sha256:e9ecbb663a0cabbe57424971298d52f764b607fab7318dd51ac545004b6fd06c"},
+    {file = "youtube_transcript_api-0.5.0.tar.gz", hash = "sha256:7498ceba7947255a5a1197c2a046d60a2d8c0cd26d6c8c56e095c54858436cde"},
 ]

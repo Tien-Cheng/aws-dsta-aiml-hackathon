@@ -1,11 +1,13 @@
 from .base import SocialMediaIntegrator
 from .telegram import TelegramIntegrator
+from .youtube import YoutubeIntegrator
 
 
 class SocialMediaIntegratorFactory:
     def __init__(self):
         self.integrators = {
             "telegram": TelegramIntegrator,
+            "youtube" : YoutubeIntegrator
         }
         self.active_integrators = {}
 

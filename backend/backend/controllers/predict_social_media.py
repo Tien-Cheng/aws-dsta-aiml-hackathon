@@ -87,18 +87,21 @@ def extract_information_from_post(post: SocialMediaPostModel) -> str:
 @validate_arguments
 async def predict_from_social_media_post(url: str, platform: Optional[str] = None):
     # Remove query parameters from url
-    url = url.split("?")[0]
+    base_url = url.split("?")[0]
     # Attempt to figure out the platform from the url
     if platform is None:
-        platform = get_platform_from_url(url)
+        platform = get_platform_from_url(base_url)
         if platform is None:
             raise ValueError("Could not determine platform from url")
+    if platform == "youtube":
+        # if platform is youtube, add back the parameters
+        base_url = url
 
     # Initialize the integrator
     integrator = social_media_integrator_factory.get_integrator(platform)
 
     # Get the post
-    post = await integrator.get_post_by_url(url)
+    post = await integrator.get_post_by_url(base_url)
 
     # Extract text from the post to be used for prediction
     text = extract_information_from_post(post)
