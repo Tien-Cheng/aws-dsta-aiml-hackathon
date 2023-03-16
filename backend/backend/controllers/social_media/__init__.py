@@ -7,7 +7,7 @@ class SocialMediaIntegratorFactory:
     def __init__(self):
         self.integrators = {
             "telegram": TelegramIntegrator,
-            "youtube" : YoutubeIntegrator
+            "youtube": YoutubeIntegrator,
         }
         self.active_integrators = {}
 
