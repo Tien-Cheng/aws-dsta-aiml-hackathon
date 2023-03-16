@@ -103,4 +103,4 @@ async def predict_from_social_media_post(url: str, platform: Optional[str] = Non
     # Extract text from the post to be used for prediction
     text = extract_information_from_post(post)
     logger.info(f"Extracted text: {text}")
-    return text
+    return text, post
