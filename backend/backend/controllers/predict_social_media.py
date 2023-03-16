@@ -6,8 +6,12 @@ from urllib.parse import urlparse
 from pydantic import validate_arguments
 
 from backend.models.models import SocialMediaPostModel
+from backend.settings import get_settings
 
+from .predict_audio import predict_audio
+from .predict_video import predict_video
 from .social_media import social_media_integrator_factory
+from .upload import upload_file_by_content
 
 logger = logging.getLogger(__name__)
 
@@ -42,14 +46,34 @@ def extract_information_from_post(post: SocialMediaPostModel) -> str:
 
     if post.media is not None:
         for media in post.media:
-            pass
             # If audio or video, attempt to get transcript
-            # TODO
-            # If image, attempt to get text
-            # TODO
-            # if media.blob is not None:
-            #     combined_text += media.blob
-            #     combined_text += " "
+            if not media.file_type:
+                continue
+            if not media.s3_path:
+                if not media.blob:
+                    continue
+                else:
+                    settings = get_settings()
+                    upload_file_by_content(
+                        media.blob, settings.S3_BUCKET_NAME, media.file_name
+                    )
+                    bucket, key = settings.S3_BUCKET_NAME, media.file_name
+            else:
+                # get file location from s3 path
+                s3_path = media.s3_path.lstrip("s3://")
+                # s3_path will be something like "s3://bucket/path/to/file"
+                bucket, key = s3_path.split("/", 1)
+                # file type will be something like "audio/mp4"
+            file_type = media.file_type.split("/")[0]
+            if file_type == "audio":
+                combined_text += predict_audio(key, bucket)
+                combined_text += " "
+            elif file_type == "video":
+                combined_text += predict_video(key, bucket)
+                combined_text += " "
+            elif file_type == "image":
+                # TODO
+                continue
 
     # Recursively get text from children
     # Base case is when post.children is None

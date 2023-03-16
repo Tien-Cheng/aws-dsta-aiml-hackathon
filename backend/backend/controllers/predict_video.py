@@ -1,3 +1,4 @@
+import logging
 from json import loads
 from tempfile import NamedTemporaryFile
 from time import sleep
@@ -9,6 +10,8 @@ from fastapi.exceptions import HTTPException
 from backend.dependencies.aws_ml import (get_rekognition_client,
                                          get_transcribe_client)
 from backend.dependencies.storage import get_s3_client
+
+logger = logging.getLogger(__name__)
 
 
 def predict_video(filename: str, bucket: str, timeout: int = 3600) -> str:
@@ -67,19 +70,37 @@ def predict_video(filename: str, bucket: str, timeout: int = 3600) -> str:
             if detections["JobStatus"] != "IN_PROGRESS":
                 detect_done = True
 
-    result = "TRANSCRIPT: "
+    result = ""
     # Process transcript
     s3_client = get_s3_client()
-    with NamedTemporaryFile() as tmp:
-        s3_client.download_fileobj(bucket, f"{transcript_name}.txt", tmp)
-        tmp.seek(0)
-        transcription_json = tmp.read().decode("utf-8")
-        transcripts = loads(transcription_json)["results"]["transcripts"]
-        for transcript in transcripts:
-            result += transcript["transcript"] + " "
+    if transcript["TranscriptionJob"]["TranscriptionJobStatus"] == "COMPLETED":
+        with NamedTemporaryFile() as tmp:
+            s3_client.download_fileobj(bucket, f"{transcript_name}.txt", tmp)
+            tmp.seek(0)
+            transcription_json = tmp.read().decode("utf-8")
+            transcripts = loads(transcription_json)["results"]["transcripts"]
+            result += "TRANSCRIPT: "
+            for transcript in transcripts:
+                result += transcript["transcript"] + " "
+        logger.info("Transcription job succeeded")
+    else:
+        logger.error("Transcription job failed")
+    #   raise HTTPException(
+    #       status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+    #       detail="Transcription job failed",
+    #   )
 
-    result += "DETECTED TEXT (OCR): "
-    for text_det in detections["TextDetections"]:
-        text = text_det["TextDetection"]["DetectedText"]
-        result += text + " "
+    if detections["JobStatus"] == "SUCCEEDED":
+        result += "DETECTED TEXT (OCR): "
+        for text_det in detections["TextDetections"]:
+            text = text_det["TextDetection"]["DetectedText"]
+            result += text + " "
+        logger.info("OCR job succeeded")
+    else:
+        logger.error("OCR job failed")
+    #   raise HTTPException(
+    #       status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+    #       detail="OCR job failed",
+    #   )
+
     return result
