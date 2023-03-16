@@ -1,5 +1,5 @@
 from functools import lru_cache
-from typing import List, Optional
+from typing import Dict, List, Optional, Set
 
 from pydantic import AnyHttpUrl, BaseSettings
 
@@ -28,6 +28,39 @@ class Settings(BaseSettings):
 
     # S3 Settings
     S3_BUCKET_NAME: str = "buyaomafandata"
+
+    # Class processing
+    MIN_CONFIDENCE: float = 0.5
+    ACCEPTED_TOXICITY_CLASSES: Optional[Set[str]] = {
+        "toxic",
+        "severe_toxic",
+        "obscene",
+        "threat",
+        "insult",
+        "identity_hate",
+        "non_hate",
+    }
+    TOXICITY_CLASS_RENAME_MAP: Optional[Dict[str, str]] = {
+        "severe_toxic": "Severe Toxicity",
+        "identity_hate": "Identity Hate",
+        "insult": "Insult",
+        "obscene": "Obscene",
+        "threat": "Threat",
+        "toxic": "Toxicity",
+        "non_hate": "Non Hate",
+    }
+    ACCEPTED_CONTENT_WARNING_CLASSES: Optional[Set[str]] = {
+        "Violence",
+        "Emaciated Bodies",
+        "Corpses",
+        "Hanging",
+        "Air Crash",
+        "Explosions And Blasts",
+        "Hate Symbols",
+        "Nazi Party",
+        "White Supremacy",
+        "Extremist",
+    }
 
     # Integrations
     ## Telegram

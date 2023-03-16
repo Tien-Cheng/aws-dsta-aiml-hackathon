@@ -1,12 +1,14 @@
 from fastapi import APIRouter, Depends, File, Form, UploadFile
 
 from backend.controllers.predict_audio import predict_audio
-from backend.controllers.predict_social_media import predict_from_social_media_post
+from backend.controllers.predict_image import moderate_image, predict_image
+from backend.controllers.predict_social_media import \
+    predict_from_social_media_post
 from backend.controllers.predict_text import predict_text
 from backend.controllers.predict_video import predict_video
-from backend.controllers.predict_image import predict_image, moderate_image
 from backend.controllers.upload import upload_file_by_content
-from backend.dependencies.utils import convert_bytes_to_b64_src
+from backend.dependencies.utils import (convert_bytes_to_b64_src,
+                                        filter_predictions)
 from backend.models.models import PredictionResponseModel
 from backend.settings import Settings, get_settings
 
@@ -18,6 +20,12 @@ router = APIRouter(
 @router.post("/text", response_model=PredictionResponseModel)
 def submit_text(text: str = Form(), settings: Settings = Depends(get_settings)):
     text_pred = predict_text(text, settings.SEGMENT_CHUNK_SIZE, settings.TEXT_ENDPOINT)
+    text_pred = filter_predictions(
+        text_pred,
+        settings.MIN_CONFIDENCE,
+        settings.ACCEPTED_TOXICITY_CLASSES,
+        settings.TOXICITY_CLASS_RENAME_MAP,
+    )
     return PredictionResponseModel(toxicity_predictions=text_pred, content_warnings=[])
 
 
@@ -47,7 +55,21 @@ async def submit_url(url: str = Form(), settings: Settings = Depends(get_setting
                 content_warnings.append(
                     {"blob": encoded_image, "classes": moderation_labels}
                 )
-    return PredictionResponseModel(toxicity_predictions=text_pred, content_warnings=content_warnings)
+    text_pred = filter_predictions(
+        text_pred,
+        settings.MIN_CONFIDENCE,
+        settings.ACCEPTED_TOXICITY_CLASSES,
+        settings.TOXICITY_CLASS_RENAME_MAP,
+    )
+    content_warnings = filter_predictions(
+        content_warnings,
+        settings.MIN_CONFIDENCE,
+        settings.ACCEPTED_CONTENT_WARNING_CLASSES,
+    )
+
+    return PredictionResponseModel(
+        toxicity_predictions=text_pred, content_warnings=content_warnings
+    )
 
 
 @router.post("/image", response_model=PredictionResponseModel)
@@ -59,18 +81,28 @@ def submit_image(
     )
     file.file.seek(0)
     upload_file_by_content(file.file, settings.S3_BUCKET_NAME, file.filename)
-    text = predict_image(
-        file.filename, settings.S3_BUCKET_NAME
-    )
+    text = predict_image(file.filename, settings.S3_BUCKET_NAME)
     toxic_predict = predict_text(
         text, settings.SEGMENT_CHUNK_SIZE, settings.TEXT_ENDPOINT
     )
-    moderation_labels = moderate_image(
-        file.filename, settings.S3_BUCKET_NAME
+    moderation_labels = moderate_image(file.filename, settings.S3_BUCKET_NAME)
+
+    toxic_predict = filter_predictions(
+        toxic_predict,
+        settings.MIN_CONFIDENCE,
+        settings.ACCEPTED_TOXICITY_CLASSES,
+        settings.TOXICITY_CLASS_RENAME_MAP,
     )
+    content_warnings = [{"blob": encoded_image, "classes": moderation_labels}]
+
+    content_warnings = filter_predictions(
+        content_warnings,
+        settings.MIN_CONFIDENCE,
+        settings.ACCEPTED_CONTENT_WARNING_CLASSES,
+    )
+
     return PredictionResponseModel(
-        toxicity_predictions=toxic_predict,
-        content_warnings=[{"blob": encoded_image, "classes": moderation_labels}],
+        toxicity_predictions=toxic_predict, content_warnings=content_warnings
     )
 
 
@@ -83,6 +115,12 @@ def submit_video(
         file.filename, settings.S3_BUCKET_NAME, settings.VIDEO_REKOGNITION_TIMEOUT
     )
     text_pred = predict_text(text, settings.SEGMENT_CHUNK_SIZE, settings.TEXT_ENDPOINT)
+    text_pred = filter_predictions(
+        text_pred,
+        settings.MIN_CONFIDENCE,
+        settings.ACCEPTED_TOXICITY_CLASSES,
+        settings.TOXICITY_CLASS_RENAME_MAP,
+    )
     return PredictionResponseModel(toxicity_predictions=text_pred, content_warnings=[])
 
 
@@ -95,4 +133,10 @@ def submit_audio(
         file.filename, settings.S3_BUCKET_NAME, settings.VIDEO_REKOGNITION_TIMEOUT
     )
     text_pred = predict_text(text, settings.SEGMENT_CHUNK_SIZE, settings.TEXT_ENDPOINT)
+    text_pred = filter_predictions(
+        text_pred,
+        settings.MIN_CONFIDENCE,
+        settings.ACCEPTED_TOXICITY_CLASSES,
+        settings.TOXICITY_CLASS_RENAME_MAP,
+    )
     return PredictionResponseModel(toxicity_predictions=text_pred, content_warnings=[])
