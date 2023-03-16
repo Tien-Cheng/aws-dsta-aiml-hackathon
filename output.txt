@@ -1,0 +1,632 @@
+hey and welcome in this project we are
+going to learn how to do speech
+recognition in python it's going to be
+very simple what we're going to do is to
+take the audio file that we recorded in
+the previous project and turn it into a
+text file let me show you how the
+project works so here is the audio file
+that we recorded in the previous project
+hi i'm patrick this is a test123
+and if we run our script
+we get the text transcription of this
+audio file so like this here
+hi i'm patrick this is a test one two
+three
+so let's learn how to implement this in
+python so for this project we are mainly
+going to need two things assembly ai's
+api to do the speech recognition and the
+request library from python to talk to
+assembly ai's api so let's first go
+ahead and get a api token from assembly
+ai it's very simple you just need to go
+to assemblyai.com and create a free
+account once you have an account you can
+sign in and just copy your api key just
+by clicking here and right away i'm
+going to create a configure file
+and put my api key here
+once i've done that now i have a way of
+authenticating who i am with assembly
+ais api and now we can start setting up
+how to upload transcribe and get the
+transcription from assembly as api the
+next thing that i want to do is to have
+a main file that is going to have all my
+code
+what i need to do in there is to import
+the requests library so that i can talk
+to the assembly ai api so this project
+is going to have four steps the first
+one is to upload the file that we have
+locally to assembly ai second one is to
+start the transcription third one is
+keep polling assembly ai's api to see
+when the transcription is done and
+lastly we're going to save this
+transcript
+so uploading is actually quite simple if
+we go to the documentation of assembly
+ai
+we will see here uploading local file
+files for transcription so i can just
+copy and paste this
+and change the code as we need it so
+basically yeah okay we are importing the
+request library already
+the file name we're going to get from
+the terminal so i will
+set that later
+just a couple of things that we need to
+pay attention here basically there is a
+way to read the audio file from our file
+system and then we need to set up a
+headers the setters are used for
+authentication so we can actually
+already set this because this is not
+going to be your api token we set it to
+be api key assembly ai right
+and we need to import it here of course
+all right that's done so we also have a
+upload endpoint for assembly and this
+one is
+api.assemblyai.com v2 upload
+but you know this might be something
+that we need also later so i'm just
+going to put this to a separate value
+variable
+and then just call this one here
+so when we're doing uh when you're when
+we're uploading a file to assembly ai we
+are doing a post request in this post
+request you need to you need to send
+this post request to the upload endpoint
+you need to include your api key
+included in the headers and of course
+you need the data so the file that you
+read and we are reading the data through
+the read file function in chunks because
+assembly ai requires it to be in chunks
+and in chunk sizes of five megabytes
+basically this is the number of bytes
+that are in there while we're at it we
+can already get the file name from the
+terminal too right so for that i just
+need to import
+and
+inside system the second or the first
+not the zeroth
+variable or the argument is going to be
+the file name
+and here let's clean up a little bit
+all right now we should be able to just
+run a command on the terminal
+include the name of the file that we
+want to upload and it will be uploaded
+to assembly ai and we will also let's
+print the response
+that we get from assembly ai to see what
+kind of response we get again this is
+the file that we are working with
+hi i'm patrick this is a test one two
+three
+and what we need to do right now is to
+run python main.pi
+and the name of the file in this case
+output.12.
+all right so we uploaded our file to
+assemble the ai successfully and the
+response what we get is the upload url
+so where your data where your audio file
+lives right now and using this we can
+start the transcription so for the
+transcription let's again cheat by
+getting the code from the docs here is
+the data the code that we need starting
+from here
+so this is a transcription endpoint you
+can see that it ends differently than
+the upload endpoint this one ends with
+upload this one ends with transcript i
+will call this the transcript endpoint
+um
+headers we already have a header we
+don't really need this anymore
+the endpoint is transcript endpoint
+uh json is the data that we are sending
+to uh or the data that we want assembly
+ai to transcribe so uh we are going to
+need to give it the audio url we already
+have the auto url right so um we got the
+response but we did not extract it from
+the response so let's do that odo url
+is response.json
+and it was called
+upload url
+so we're going to give this audio url
+to here because that was just an example
+okay and this way we will have started a
+transcription and
+let's do this and see what the result is
+i will run this again same thing
+all right so we got a much longer
+response in this response what we have
+we have a bunch of information about the
+transcription that we've just started so
+you do not get the transcript itself
+immediately because depending on the
+length of your audio it might take a
+minute or two right so um what we get
+instead is the id of this transcription
+job so by using this id from now on we
+can ask assembly ai hey here is the id
+of my job this transcription job that i
+submitted to you is it ready or not and
+if it's not ready it will tell you it's
+not ready yet it's still processing if
+it's ready it will tell you hey it's
+completed and here is your transcript so
+that's why the next thing that we want
+to build is the polling we're going to
+keep we're going to write the code that
+will keep polling assembly ai to tell us
+if the transcription is ready or not but
+before we go further let me first clean
+up this code a little bit so that you
+know everything is nicely packed and
+functions we can use them pre-use them
+again if we need to so this one is the
+upload function
+yes and what it needs to return is the
+audio url
+we do not need to print the response
+anymore we've already seen what it looks
+like and we need to put the header
+separately because we want
+both upload and transcribe and basically
+everything else to be able to reach this
+variable called headers
+for transcription again i will create a
+function called transcribe
+and what i need to return from the
+transcription function
+is the id so i will just say
+job id
+and that would be response.json
+and id
+again we don't need this anymore
+i'll just call this transcript
+response to make it clear this will be
+upload
+response
+let's call this transcript request
+so everything is nice and clean this is
+this and this goes here
+and for upload response we use it here
+and we need to return job id
+all right so now we have them nicely
+wrapped up in different functions and
+everything else looks good let's run
+this again to see that it works
+oh of course i'm not calling the
+function so let me call the functions
+and then run it
+upload
+and transcribe but of course i also need
+to pass the file name to the upload
+function
+so let's do that too
+audio url is not defined
+audio of course then i also need to pass
+audio url
+audio url
+to transcribe good thing we tried
+so this will be returned from the upload
+function and then we will pass it to the
+transcribe function
+and as a result we will get
+job id
+and then i can print job id to see that
+it worked
+let's see
+yes i do get a jaw body so okay things
+are working the next thing that we want
+to do is to set up the polling function
+so the first thing we need to do for
+that is to create a polling endpoint
+pulling endpoint so as you know we have
+the transcript endpoint and the upload
+endpoint here
+that's how we communicate with assembly
+ai's api with polling endpoint it's
+going to be specific to the
+transcription job that you just
+submitted so to create that all you need
+to do is to combine
+transcript endpoint
+with a slash in between
+and add the job id but the jaw body is a
+bit awake so i'll just going to call
+this transcript id
+so by doing that now you have a url that
+you can ask to assembly ai with which
+you can ask assembly ai if your job is
+done already or not
+and again we're going to send a request
+to assembly ai this time it's going to
+be a get request well i'll just copy
+this so that it's easy uh
+instead of post it's going to be a get
+request we're going to use the polling
+endpoint instead of the transcript
+endpoint and
+we just need the headers for this we do
+not because we are not sending any
+information to assembly ai we're just
+asking for information
+if you're familiar with requests
+normally this might be very simple for
+you but all you need to know about this
+is that when you're sending data to an
+api you use the post
+request type and if you're only getting
+some information as the name suggests
+you use the get
+request type so the result the resulting
+or the response that we get is going to
+be called polling response
+um
+let's see it's not job id i called
+transcript id so that it works
+then we get the polling response and i
+can also show you what the polling
+response looks like
+looks good okay let's run this
+all right so the it we got response 200
+that means things are going well but
+actually what i need is a json response
+so
+let's see that again
+yes this is more like it so again we get
+the id of the response a language model
+that is being used and some other bunch
+of information but what we need here is
+the status so let's see where that is
+oh yeah there it is so we have status
+processing um this means that the
+transcription is still being is still
+being prepared so we need to wait a
+little bit more and we need to ask
+assembly ai again soon to see if the
+transcription is done or not what we
+normally do is to wait 30 seconds or
+maybe 60 seconds depending on the length
+of your
+transcription or length of your audio
+file and then when it's done it will
+give us status completed so let's write
+the bit where we ask assembly ai
+repetitively if the transcription is
+done or not so for that we can just
+create a very simple while loop
+while true
+we do the polling
+and if
+polling response dot json
+status
+equals to completed
+we return the
+polling
+response
+but
+if polling
+response
+status is
+error because it is possible that it
+might error out
+then we will return um
+i'll just wrap this into a function i
+can call this gets
+transcription
+results url
+and while we're at it we might as well
+also
+wrap the polling into a function
+do we need to pass anything to it
+yes the transcript id
+we need to pass a transcript id to it
+um
+and instead of printing the response we
+will just return the response
+so instead of doing the request here all
+we would need to do is to call this
+function
+with the transcript id
+uh we can pass the transcript id here or
+might as well i will just call the
+transcription or transcribe function in
+here
+and the
+resulting thing would be the transcript
+id from the transcription function
+and then i'm going to pass this
+transcript id to the polling function
+that is going to return to me the
+polling response
+uh i will call this polling response
+data and
+inside this data so this is not needed
+anymore
+um
+yeah this
+so the polling response.json is what is
+being passed i call that the data so i
+change this to data here and also
+data here
+um
+yeah then i'll just pass the data
+uh if it's error i can still pass the
+data just to see the response and what
+kind of what kind of error that we got
+and here then i'm just just saying none
+all right let's let's do a little
+cleanup so we have a nice upload
+function a transcribe function what we
+did before was we were calling the
+upload function getting the audio url
+and then passing it to transcribe but
+i'm running transcribe here so i do not
+need this anymore i still need to pass
+the audio url to transcribe so then i
+would need to pass it to here so instead
+of this
+i just need to call
+this function
+with the audi url
+um yeah let's put these here
+actually to make it a bit more
+understandable maybe instead of passing
+the string error i can just pass
+whatever error
+that was that happened in my
+transcription then you know we'll be
+able to see what went wrong
+uh all right so what we get as a result
+from get transcription result id is the
+data
+and if there is any the error
+so then let's why not run this and see
+what the data is going to look like
+all right so we get something really
+really big let's see maybe i'll just
+clear this and run it again just so that
+you know we can see it more clearly
+all right so we get the id again a
+language model that is being used etc
+now we want the results yes it is under
+text
+uh hi i'm patrick this is a test one two
+three is what we get and we also get the
+breakdown of words uh when each word
+started and then each word ended in
+milliseconds confidence of this
+classification
+and much more information what we want
+to do though even though we have all
+this information we want to write this
+transcript that is generated by assembly
+ai into a text file so in this next step
+that's what we're going to do
+all right let's come up with a file name
+for this file
+uh we can call it actually we can just
+call it the same thing as the file name
+plus txt so the file name okay we were
+using the
+argument or variable file name too so
+maybe let's find something else
+i will just call this
+text
+file name
+and it will be the file name
+plus
+dot txt
+we can also just you know remove the
+dots valve or dot mp4 or whatever but
+well let's not deal with that for now
+so once i have this i will just
+open it
+oops
+i will open it in writing format
+and inside i will write data
+text because that's where we have the
+text information on the transcript if
+you remember here this was a response we
+got and text includes the transcription
+and i can just prompt the user saying
+that transcription is saved
+transcription
+saved
+we're happy
+of course there is a possibility that
+our transcription errored out so you
+want to cover that too if you remember
+we return data and error
+what we can do is you can say if data is
+returned
+this happens
+but if it errored out
+i will just print
+there
+no
+it didn't work out and the air itself so
+that we see you know what went wrong
+okay let's do a little cleanup again i
+want to wrap this all up in a function
+we can call the save transcript
+[Music]
+data
+and error will be returned from get
+transcript url
+it needs the audio url so i will just
+need to pass all the url here
+and with that we're actually more or
+less ready so let's run this and see if
+we get what we need the transcript saved
+in a file
+for that after the after calling the
+upload
+function i can move this one
+here and calling the upload function
+here
+i call the upload function and then i
+call the save transcript function and
+let's quickly follow that up um i call
+the save transcript function it calls
+get transcription result url get
+transcription result url calls
+transcribe
+transcribe is here
+uh it starts a transcription process and
+then a get transcription result url also
+calls polling so it keeps pulling
+assembly ai and when it's done it
+returns something and then we deal with
+it in the same transcript function and
+we either save a transcript or if
+there's an error we display the error so
+uh let's run this and see if we get any
+errors
+transcription saved all right let's see
+um
+output valve.txt if i open it up
+it looks quite small maybe i can if i
+open it like this
+yes
+hi i'm patrick this is a test one two
+three is the result that we're getting
+so that's awesome we actually achieved
+what we wanted to do so in this next
+couple of minutes i actually want to
+clean up the code once again because
+you're going to build a couple more
+projects and we want to have a
+python file that has some reusable code
+so we don't have to reinvent the wheel
+all the time
+so let me first go here actually when
+we're doing the pulling if we just have
+the while true loop it's going to keep
+asking assembly ai for results and you
+know that that might be unnecessary so
+what we can do is to include some
+waiting times in between so it can ask
+if it's not completed yet it can wait
+let's say 30 seconds to ask again
+so we can inform
+the user
+waiting 30 seconds
+what i need is a time module
+so this call is 30
+and i will just import time here
+and this way it should be waiting 30
+seconds in between asking assembly ai if
+the transcript is ready or not
+and okay let's create that extra file
+that we have api
+communication i'll call it
+um
+yes so i will move all of the functions
+that communicate with the api there so i
+need to move the upload function
+i need to move transcribe poll all of
+these actually
+so just remove that yeah
+uh
+let's see did we miss anything no i'll
+just remove these from here
+file name can stay here of course
+headers and the upload and transcript
+endpoints need to live here
+because they are needed by the functions
+in here we have to import the requests
+library
+so we don't need it anymore here
+we need to import the
+assembly ai api key
+system needs to stay here time needs to
+go there
+and we also need to import from api
+communication
+uh import let's just say all
+and that way we can use these function
+in our main python script
+i will run this again to make sure that
+it is still working so i will delete
+the text file that was created i will
+keep the output
+nice so we also get the prompt that the
+program is waiting 30 seconds before
+asking again
+oh yeah we passed the file name but of
+course it might not exist there so let's
+go and fix that the file name is here we
+only pass it to the upload function and
+the upload function is here now
+um
+and in the save transcript we do not
+pass it but we are actually using it so
+what we can do is to just also pass the
+file name here
+and that should be fine it should fix
+the problem
+transcription saved all right let's see
+i'll put 12 txc hi
+um
+[Music]
+like this
+hi i'm patrick this is a test one two
+three so this is a very short
+audio file and we've actually been using
+it over and over again so i want to also
+show that this code is working to you
+using another audio file
+this is the audio of the one of the
+latest short videos that i made for our
+youtube channel
+i was just talking about what natural
+language processing is so this time
+maybe if i add underscores it will be
+easier
+to call
+yes
+i'll just copy its name
+and when i'm calling the script i will
+use its name
+this will probably take a little bit
+longer because the audio file have you
+been using is only a couple of seconds
+and this one is one minute so we will
+see what the results are going to show
+us
+right here we go the transcription is
+saved we find it here
+right this is exactly what i was talking
+about
+let's uh listen to it while the
+transcription is open
+can alexa be your best buddy well not
+now but probably very soon we have been
+seeing gigantic leaps over the last
+couple of years in terms of how
+computers can understand and use natural
+language
+all right you get the idea so our code
+works this is amazing i hope you've been
+able to follow along if you want to have
+the code don't forget that you can go
+get it and the github repository we
+prepared for you using the link in the
+description
+[Music]

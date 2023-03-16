@@ -18,6 +18,7 @@ python-dotenv = "^1.0.0"
 requests = "^2.28.2"
 python-multipart = "^0.0.6"
 pyffmpeg = "^2.4.2.16"
+youtube-transcript-api = "^0.5.0"
 
 
 [tool.poetry.group.dev.dependencies]
