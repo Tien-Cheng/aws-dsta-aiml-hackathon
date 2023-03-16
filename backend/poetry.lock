@@ -377,6 +377,14 @@ dotenv = ["python-dotenv (>=0.10.4)"]
 email = ["email-validator (>=1.0.3)"]
 
 [[package]]
+name = "pyffmpeg"
+version = "2.4.2.16"
+description = "FFmpeg wrapper for python"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "pyparsing"
 version = "3.0.9"
 description = "pyparsing module - Classes and methods to define and execute parsing grammars"
@@ -579,7 +587,7 @@ standard = ["colorama (>=0.4)", "httptools (>=0.5.0)", "python-dotenv (>=0.13)",
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "5caad37d76de8869d713776b850015a313baebb7cf3d6c04b891d2a1bb82572e"
+content-hash = "ebbe34c2e771b0ab51fcb4b89b72f5eb2190952552f34155b84efd1727729cab"
 
 [metadata.files]
 anyio = [
@@ -845,6 +853,15 @@ pydantic = [
     {file = "pydantic-1.10.6-cp39-cp39-win_amd64.whl", hash = "sha256:189318051c3d57821f7233ecc94708767dd67687a614a4e8f92b4a020d4ffd06"},
     {file = "pydantic-1.10.6-py3-none-any.whl", hash = "sha256:acc6783751ac9c9bc4680379edd6d286468a1dc8d7d9906cd6f1186ed682b2b0"},
     {file = "pydantic-1.10.6.tar.gz", hash = "sha256:cf95adb0d1671fc38d8c43dd921ad5814a735e7d9b4d9e437c088002863854fd"},
+]
+pyffmpeg = [
+    {file = "pyffmpeg-2.4.2.16-py3-none-macosx_10_9_universal2.whl", hash = "sha256:653caa523b129b4807161295205ba03884ea6828b8c23702d628a7639e64322f"},
+    {file = "pyffmpeg-2.4.2.16-py3-none-macosx_10_9_x86_64.whl", hash = "sha256:b1676414ef8ce722e1475fdd419c55459d957e3cc1a4f76c69307006faca1d8c"},
+    {file = "pyffmpeg-2.4.2.16-py3-none-macosx_11_0_arm64.whl", hash = "sha256:720fcff60d4ebef4253be55d056c68198f18a205ea11cb6e3f27ba8140260d5f"},
+    {file = "pyffmpeg-2.4.2.16-py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:e206b04e7660467ac94c46ce0fbad94822589e82dc430b76e05a185049fca951"},
+    {file = "pyffmpeg-2.4.2.16-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:b7c5069e7c12a4789aea126108574991ee93ef3b8078b6d41181c32d09f8e59f"},
+    {file = "pyffmpeg-2.4.2.16-py3-none-win32.whl", hash = "sha256:46b178c664d5ea0977291a18314ce09c98ef87292ac1a2266cd65b9250e0752a"},
+    {file = "pyffmpeg-2.4.2.16-py3-none-win_amd64.whl", hash = "sha256:8bf3a598ae5ef08f655b91e68fc15c683d252be823dd3633d986218f78d601a5"},
 ]
 pyparsing = [
     {file = "pyparsing-3.0.9-py3-none-any.whl", hash = "sha256:5026bae9a10eeaefb61dab2f09052b9f4307d44aee4eda64b309723d8d206bbc"},

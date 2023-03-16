@@ -40,7 +40,7 @@ class TelegramIntegrator(SocialMediaIntegrator):
         remove("anon.session")
 
     async def get_post_by_url(
-        self, post_url: str, save_s3: bool = True, save_blob: bool = False
+        self, post_url: str, save_s3: bool = True, save_blob: bool = True
     ) -> SocialMediaPostModel:
         # id: channel_id/post_id
         # note that it should be stripped of any domain
