@@ -1,3 +1,4 @@
+import logging
 from json import loads
 from tempfile import NamedTemporaryFile
 from time import sleep
@@ -8,6 +9,8 @@ from fastapi.exceptions import HTTPException
 
 from backend.dependencies.aws_ml import get_transcribe_client
 from backend.dependencies.storage import get_s3_client
+
+logger = logging.getLogger(__name__)
 
 
 def predict_audio(filename: str, bucket: str, timeout: int = 3600) -> str:
@@ -50,12 +53,17 @@ def predict_audio(filename: str, bucket: str, timeout: int = 3600) -> str:
                 transcribe_done = True
     result = ""
     # Process transcript
-    s3_client = get_s3_client()
-    with NamedTemporaryFile() as tmp:
-        s3_client.download_fileobj(bucket, f"{transcript_name}.txt", tmp)
-        tmp.seek(0)
-        transcription_json = tmp.read().decode("utf-8")
-        transcripts = loads(transcription_json)["results"]["transcripts"]
-        for transcript in transcripts:
-            result += transcript["transcript"] + " "
+    if transcript["TranscriptionJob"]["TranscriptionJobStatus"] == "COMPLETED":
+        logger.info("Transcription job completed")
+        s3_client = get_s3_client()
+        with NamedTemporaryFile() as tmp:
+            s3_client.download_fileobj(bucket, f"{transcript_name}.txt", tmp)
+            tmp.seek(0)
+            transcription_json = tmp.read().decode("utf-8")
+            transcripts = loads(transcription_json)["results"]["transcripts"]
+            for transcript in transcripts:
+                result += transcript["transcript"] + " "
+            logger.info("Transcription downloaded and read")
+    else:
+        logger.error("Transcription job failed")
     return result
