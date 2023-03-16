@@ -17,6 +17,8 @@ import {
     Button,
     IconButton,
     useMediaQuery,
+    CircularProgress,
+    Alert
 } from "@mui/material";
 import FlexBetween from "components/FlexBetween";
 import Dropzone from "react-dropzone";
@@ -37,49 +39,66 @@ const InputPostWidget = () => {
     const [audio, setAudio] = useState(null);
     const [isUrl, setIsUrl] = useState(false);
     const [url, setUrl] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [isError, setIsError] = useState(false);
+
     const { palette } = useTheme();
     const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
     const mediumMain = palette.neutral.mediumMain;
     const medium = palette.neutral.medium;
   
     const handlePost = async () => {
+        setIsError(false);
+
         const formData = new FormData();
         let endpoint = "";
 
         if (isText) {
             formData.append("text", text);
             endpoint = "text";
-        } else if (isImage) {
-            formData.append("file", image);
-            formData.append("filePath", image.name);
-            endpoint = "image";
+        } else if (isUrl) {
+            formData.append("url", url);
+            endpoint = "url";
         } else if (isVideo) {
             formData.append("file", video);
             formData.append("filePath", video.name);
             endpoint = "video";
+        } else if (isImage) {
+            formData.append("file", image);
+            formData.append("filePath", image.name);
+            endpoint = "image";
         } else if (isAudio) {
             formData.append("file", audio);
             formData.append("filePath", audio.name);
             endpoint = "audio";
-        } else if (isUrl) {
-            formData.append("url", url);
-            endpoint = "url";
         }
 
-        const response = await fetch(`http://localhost:8080/predict/` + endpoint, {
-            method: "POST",
-            body: formData
-        });
-        const posts = await response.json();
-        dispatch(setPosts({ posts }));
-        setText("");
-        setImage(null);
-        setVideo(null);
-        setAudio(null);
-        setUrl("");
+        setIsLoading(true);
+
+        try {
+            const response = await fetch(`http://localhost:8080/predict/` + endpoint, {
+                method: "POST",
+                body: formData
+            });
+            const posts = await response.json();
+
+            setIsLoading(false);
+
+            dispatch(setPosts({ posts }));
+            setText("");
+            setImage(null);
+            setVideo(null);
+            setAudio(null);
+            setUrl("");
+        } catch {
+            setIsLoading(false);
+            setIsError(true);
+        }
     };
   
     return (
+        <>
+        {isError ? <Alert onClose={() => {setIsError(false)}} severity="error" sx={{mb: "1rem"}}>Oops! An error has occurred</Alert> : <></>} 
         <WidgetWrapper>
             <FlexBetween>
                 <FlexBetween gap="0.25rem" onClick={() => {
@@ -99,18 +118,18 @@ const InputPostWidget = () => {
                 </FlexBetween>
 
                 <FlexBetween gap="0.25rem" onClick={() => {
-                    setIsText(false)
-                    setIsImage(!isImage)
-                    setIsVideo(false)
-                    setIsAudio(false)
-                    setIsUrl(false)
-                    }}>
-                    <ImageOutlined sx={{ color: mediumMain }} />
-                    <Typography
+                        setIsText(false)
+                        setIsImage(false)
+                        setIsVideo(false)
+                        setIsAudio(false)
+                        setIsUrl(!isUrl)
+                        }}>
+                    <LinkOutlined sx={{ color: mediumMain }} />
+                    <Typography 
                         color={mediumMain}
                         sx={{ "&:hover": { cursor: "pointer", color: medium } }}
                     >
-                        Image
+                        URL
                     </Typography>
                 </FlexBetween>
 
@@ -134,6 +153,22 @@ const InputPostWidget = () => {
 
                     <FlexBetween gap="0.25rem" onClick={() => {
                         setIsText(false)
+                        setIsImage(!isImage)
+                        setIsVideo(false)
+                        setIsAudio(false)
+                        setIsUrl(false)
+                        }}>
+                        <ImageOutlined sx={{ color: mediumMain }} />
+                        <Typography
+                            color={mediumMain}
+                            sx={{ "&:hover": { cursor: "pointer", color: medium } }}
+                        >
+                            Image
+                        </Typography>
+                    </FlexBetween>
+
+                    <FlexBetween gap="0.25rem" onClick={() => {
+                        setIsText(false)
                         setIsImage(false)
                         setIsVideo(false)
                         setIsAudio(!isAudio)
@@ -148,21 +183,7 @@ const InputPostWidget = () => {
                     </Typography>
                     </FlexBetween>
 
-                    <FlexBetween gap="0.25rem" onClick={() => {
-                        setIsText(false)
-                        setIsImage(false)
-                        setIsVideo(false)
-                        setIsAudio(false)
-                        setIsUrl(!isUrl)
-                        }}>
-                    <LinkOutlined sx={{ color: mediumMain }} />
-                    <Typography 
-                        color={mediumMain}
-                        sx={{ "&:hover": { cursor: "pointer", color: medium } }}
-                    >
-                        URL
-                    </Typography>
-                    </FlexBetween>
+
                 </>
                 ) : (
                 <FlexBetween gap="0.25rem">
@@ -189,49 +210,20 @@ const InputPostWidget = () => {
                     />
                 </FlexBetween>
             )}
-            {isImage && (
-                <Box
-                border={`1px solid ${medium}`}
-                borderRadius="5px"
-                mt="1rem"
-                p="1rem"
-                >
-                <Dropzone
-                    accept=".jpg,.jpeg,.png"
-                    multiple={false}
-                    onDrop={(acceptedFiles) => setImage(acceptedFiles[0])}
-                >
-                    {({ getRootProps, getInputProps }) => (
-                    <FlexBetween>
-                        <Box
-                            {...getRootProps()}
-                            border={`2px dashed ${palette.primary.main}`}
-                            p="1rem"
-                            width="100%"
-                            sx={{ "&:hover": { cursor: "pointer" } }}
-                        >
-                        <input {...getInputProps()} />
-                        {!image ? (
-                            <p>Add Image Here</p>
-                        ) : (
-                            <FlexBetween>
-                            <Typography>{image.name}</Typography>
-                            <EditOutlined />
-                            </FlexBetween>
-                        )}
-                        </Box>
-                        {image && (
-                        <IconButton
-                            onClick={() => setImage(null)}
-                            sx={{ width: "15%" }}
-                        >
-                            <DeleteOutlined />
-                        </IconButton>
-                        )}
-                    </FlexBetween>
-                    )}
-                </Dropzone>
-                </Box>
+            {isUrl && (
+                <FlexBetween gap="1.5rem">
+                    <InputBase
+                    placeholder="Enter URL here..."
+                    onChange={(e) => setUrl(e.target.value)}
+                    value={url}
+                    sx={{
+                        width: "100%",
+                        backgroundColor: palette.neutral.light,
+                        borderRadius: "1rem",
+                        padding: "1rem 2rem",
+                    }}
+                    />
+                </FlexBetween>
             )}
             {isVideo && (
                 <Box
@@ -267,6 +259,50 @@ const InputPostWidget = () => {
                         {video && (
                         <IconButton
                             onClick={() => setVideo(null)}
+                            sx={{ width: "15%" }}
+                        >
+                            <DeleteOutlined />
+                        </IconButton>
+                        )}
+                    </FlexBetween>
+                    )}
+                </Dropzone>
+                </Box>
+            )}
+            {isImage && (
+                <Box
+                border={`1px solid ${medium}`}
+                borderRadius="5px"
+                mt="1rem"
+                p="1rem"
+                >
+                <Dropzone
+                    accept=".jpg,.jpeg,.png"
+                    multiple={false}
+                    onDrop={(acceptedFiles) => setImage(acceptedFiles[0])}
+                >
+                    {({ getRootProps, getInputProps }) => (
+                    <FlexBetween>
+                        <Box
+                            {...getRootProps()}
+                            border={`2px dashed ${palette.primary.main}`}
+                            p="1rem"
+                            width="100%"
+                            sx={{ "&:hover": { cursor: "pointer" } }}
+                        >
+                        <input {...getInputProps()} />
+                        {!image ? (
+                            <p>Add Image Here</p>
+                        ) : (
+                            <FlexBetween>
+                            <Typography>{image.name}</Typography>
+                            <EditOutlined />
+                            </FlexBetween>
+                        )}
+                        </Box>
+                        {image && (
+                        <IconButton
+                            onClick={() => setImage(null)}
                             sx={{ width: "15%" }}
                         >
                             <DeleteOutlined />
@@ -321,25 +357,11 @@ const InputPostWidget = () => {
                 </Dropzone>
                 </Box>
             )}
-            {isUrl && (
-                <FlexBetween gap="1.5rem">
-                    <InputBase
-                    placeholder="Enter URL here..."
-                    onChange={(e) => setUrl(e.target.value)}
-                    value={url}
-                    sx={{
-                        width: "100%",
-                        backgroundColor: palette.neutral.light,
-                        borderRadius: "1rem",
-                        padding: "1rem 2rem",
-                    }}
-                    />
-                </FlexBetween>
-            )}
+
 
             <FlexBetween justifyItems="center">
                 <Button
-                    disabled={!((text && isText) || (image && isImage) || (video && isVideo) || (audio && isAudio) || (url && isUrl))}
+                    disabled={!((text && isText) || (url && isUrl) || (video && isVideo) || (image && isImage) || (audio && isAudio)) || isLoading}
                     onClick={handlePost}
                     sx={{
                         color: palette.background.alt,
@@ -349,10 +371,11 @@ const InputPostWidget = () => {
                         width: "100%"
                     }}
                     >
-                    Submit
+                    {!isLoading ? "Submit" : <CircularProgress color="inherit" size="1rem"/>}
                 </Button>
             </FlexBetween>
         </WidgetWrapper>
+        </>
     );
 };
   

@@ -5,12 +5,18 @@ import TableContainer from '@mui/material/TableContainer';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
-const TableSummary = ({header, rows, headerColor}) => {
+const TableSummary = ({header, rows, headerColor, image}) => {
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 500 }} aria-label="summary table">
         <TableBody>
-          <TableCell sx={{ fontWeight: "bolder", fontSize: "16px", color: headerColor, width: "40%" }} rowSpan={rows.length + 1}>"{header}"</TableCell>
+          <TableRow>
+            {image ?
+              <TableCell sx={{ fontWeight: "bolder", fontSize: "0.9rem", color: headerColor, width: "40%" }} rowSpan={rows.length + 1}><img src={header} alt="analysed"/></TableCell>
+            :
+              <TableCell sx={{ fontWeight: "bolder", fontSize: "0.9rem", color: headerColor, width: "40%" }} rowSpan={rows.length + 1}>"{header}"</TableCell>
+            }
+          </TableRow>
           {rows.map((row) => (
             <TableRow key={row.Name}>
               <TableCell style={{ fontWeight: "bold"}} component="th" scope="row">
