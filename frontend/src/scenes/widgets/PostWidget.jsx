@@ -12,7 +12,7 @@ const PostWidget = ({description}) => {
 
     return (
         <WidgetWrapper m="2rem 0">
-            {contentDetails ? <Typography
+            {contentDetails?.length ? <Typography
                 fontWeight="bold"
                 fontSize="1rem"
                 sx={{margin: "0.5rem 0"}}
