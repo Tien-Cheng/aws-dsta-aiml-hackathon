@@ -16,18 +16,26 @@ router = APIRouter(
 )
 
 
-@router.post("/text", response_model=List[PredictionResponseModel])
+@router.post("/text", response_model=PredictionResponseModel)
 def submit_text(text: str = Form(), settings: Settings = Depends(get_settings)):
-    return predict_text(text, settings.SEGMENT_CHUNK_SIZE, settings.TEXT_ENDPOINT)
+    text_pred = predict_text(text, settings.SEGMENT_CHUNK_SIZE, settings.TEXT_ENDPOINT)
+    return PredictionResponseModel(
+        toxicity_predictions=text_pred,
+        content_warnings=[]
+    )
 
 
-@router.post("/url", response_model=List[PredictionResponseModel])
+@router.post("/url", response_model=PredictionResponseModel)
 async def submit_url(url: str = Form(), settings: Settings = Depends(get_settings)):
     text = await predict_from_social_media_post(url)
-    return predict_text(text, settings.SEGMENT_CHUNK_SIZE, settings.TEXT_ENDPOINT)
+    text_pred = predict_text(text, settings.SEGMENT_CHUNK_SIZE, settings.TEXT_ENDPOINT)
+    return PredictionResponseModel(
+        toxicity_predictions=text_pred,
+        content_warnings=[]
+    )
 
 
-@router.post("/video", response_model=List[PredictionResponseModel])
+@router.post("/video", response_model=PredictionResponseModel)
 def submit_video(
     file: UploadFile = File(...), settings: Settings = Depends(get_settings)
 ):
@@ -35,10 +43,14 @@ def submit_video(
     text = predict_video(
         file.filename, settings.S3_BUCKET_NAME, settings.VIDEO_REKOGNITION_TIMEOUT
     )
-    return predict_text(text, settings.SEGMENT_CHUNK_SIZE, settings.TEXT_ENDPOINT)
+    text_pred = predict_text(text, settings.SEGMENT_CHUNK_SIZE, settings.TEXT_ENDPOINT)
+    return PredictionResponseModel(
+        toxicity_predictions=text_pred,
+        content_warnings=[]
+    )
 
 
-@router.post("/audio", response_model=List[PredictionResponseModel])
+@router.post("/audio", response_model=PredictionResponseModel)
 def submit_audio(
     file: UploadFile = File(...), settings: Settings = Depends(get_settings)
 ):
@@ -46,4 +58,8 @@ def submit_audio(
     text = predict_audio(
         file.filename, settings.S3_BUCKET_NAME, settings.VIDEO_REKOGNITION_TIMEOUT
     )
-    return predict_text(text, settings.SEGMENT_CHUNK_SIZE, settings.TEXT_ENDPOINT)
+    text_pred = predict_text(text, settings.SEGMENT_CHUNK_SIZE, settings.TEXT_ENDPOINT)
+    return PredictionResponseModel(
+        toxicity_predictions=text_pred,
+        content_warnings=[]
+    )
