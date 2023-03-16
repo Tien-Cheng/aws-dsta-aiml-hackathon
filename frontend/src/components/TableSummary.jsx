@@ -12,7 +12,7 @@ const TableSummary = ({header, rows, headerColor, image}) => {
         <TableBody>
           <TableRow>
             {image ?
-              <TableCell sx={{ fontWeight: "bolder", fontSize: "0.9rem", color: headerColor, width: "40%" }} rowSpan={rows.length + 1}><img src={header} alt="analysed"/></TableCell>
+              <TableCell sx={{ fontWeight: "bolder", fontSize: "0.9rem", color: headerColor, width: "40%" }} rowSpan={rows.length + 1}><img src={header} alt="analysed" style={{maxWidth: "80%"}}/></TableCell>
             :
               <TableCell sx={{ fontWeight: "bolder", fontSize: "0.9rem", color: headerColor, width: "40%" }} rowSpan={rows.length + 1}>"{header}"</TableCell>
             }

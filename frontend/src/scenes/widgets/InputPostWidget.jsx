@@ -364,6 +364,7 @@ const InputPostWidget = () => {
                     disabled={!((text && isText) || (url && isUrl) || (video && isVideo) || (image && isImage) || (audio && isAudio)) || isLoading}
                     onClick={handlePost}
                     sx={{
+                        '&:disabled': {color: palette.neutral.medium},
                         color: palette.background.alt,
                         backgroundColor: palette.primary.main,
                         borderRadius: "0.5rem",
@@ -371,7 +372,7 @@ const InputPostWidget = () => {
                         width: "100%"
                     }}
                     >
-                    {!isLoading ? "Submit" : <CircularProgress color="inherit" size="1rem"/>}
+                    {!isLoading ? "Submit" : <CircularProgress style={{color: palette.background.alt}} size="1.3rem"/>}
                 </Button>
             </FlexBetween>
         </WidgetWrapper>
