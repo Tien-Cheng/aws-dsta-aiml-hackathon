@@ -1,9 +1,8 @@
 import logging
-
 from base64 import b64encode
+from mimetypes import guess_extension
 from tempfile import NamedTemporaryFile
 from typing import List, Optional, Set
-from mimetypes import guess_extension
 
 from pyffmpeg import FFmpeg
 
@@ -12,6 +11,7 @@ logger = logging.getLogger(__name__)
 
 def convert_bytes_to_b64_src(blob: bytes, mime_type: str) -> str:
     return f"data:{mime_type};base64,{b64encode(blob).decode('utf-8')}"
+
 
 def get_thumbnail_b64_src(video_bytes: bytes, mime_type: str) -> str:
     try:
@@ -34,6 +34,7 @@ def get_thumbnail_b64_src(video_bytes: bytes, mime_type: str) -> str:
     except Exception as err:
         logger.error(f"Error getting thumbnail: {err}")
         return ""
+
 
 def filter_predictions(
     predictions: List[dict],

@@ -1,21 +1,21 @@
-from tempfile import NamedTemporaryFile
 from io import BytesIO
 from mimetypes import guess_extension
+from tempfile import NamedTemporaryFile
 
-from pyffmpeg import FFmpeg
 from fastapi import APIRouter, Depends, File, Form, UploadFile
+from pyffmpeg import FFmpeg
 
 from backend.controllers.predict_audio import predict_audio
 from backend.controllers.predict_image import moderate_image, predict_image
-from backend.controllers.predict_social_media import predict_from_social_media_post
+from backend.controllers.predict_social_media import \
+    predict_from_social_media_post
 from backend.controllers.predict_text import predict_text
-from backend.controllers.predict_video import content_moderation_video, predict_video
+from backend.controllers.predict_video import (content_moderation_video,
+                                               predict_video)
 from backend.controllers.upload import upload_file_by_content
-from backend.dependencies.utils import (
-    convert_bytes_to_b64_src,
-    get_thumbnail_b64_src,
-    filter_predictions,
-)
+from backend.dependencies.utils import (convert_bytes_to_b64_src,
+                                        filter_predictions,
+                                        get_thumbnail_b64_src)
 from backend.models.models import PredictionResponseModel
 from backend.settings import Settings, get_settings
 
