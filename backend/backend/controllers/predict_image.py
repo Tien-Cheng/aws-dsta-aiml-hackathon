@@ -7,7 +7,7 @@ from uuid import uuid4
 from fastapi import status
 from fastapi.exceptions import HTTPException
 
-from backend.dependencies.aws_ml import (get_rekognition_client)
+from backend.dependencies.aws_ml import get_rekognition_client
 
 logger = logging.getLogger(__name__)
 
@@ -15,8 +15,8 @@ logger = logging.getLogger(__name__)
 def predict_image(filename: str, bucket: str) -> str:
     rekognition = get_rekognition_client()
 
-    #Text Detection
-    detections= rekognition.detect_text(
+    # Text Detection
+    detections = rekognition.detect_text(
         Image={
             "S3Object": {
                 "Bucket": bucket,
@@ -24,10 +24,8 @@ def predict_image(filename: str, bucket: str) -> str:
             }
         }
     )
-    
-    result=""
-    
-    result += "DETECTED TEXT (OCR): "
+
+    result = ""
     for text_det in detections["TextDetections"]:
         text = text_det["DetectedText"]
         result += text + " "
@@ -39,8 +37,8 @@ def predict_image(filename: str, bucket: str) -> str:
 
 def moderate_image(filename: str, bucket: str) -> dict:
     rekognition = get_rekognition_client()
-    #Content Moderation
-    moderations= rekognition.detect_moderation_labels(
+    # Content Moderation
+    moderations = rekognition.detect_moderation_labels(
         Image={
             "S3Object": {
                 "Bucket": bucket,
@@ -50,9 +48,10 @@ def moderate_image(filename: str, bucket: str) -> dict:
     )
     results = []
     for label in moderations["ModerationLabels"]:
-        results.append({
-            "Name": label["Name"],
-            "Score": label["Confidence"],
-        })
+        results.append(
+            {
+                "Name": label["Name"],
+                "Score": label["Confidence"],
+            }
+        )
     return results
-

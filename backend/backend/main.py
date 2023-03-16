@@ -1,3 +1,8 @@
+import logging
+
+# Make logging work with uvicorn
+logging.basicConfig(level=logging.INFO)
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
