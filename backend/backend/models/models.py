@@ -49,7 +49,14 @@ class ClassResponse(BaseModel):
     Name: str
     Score: float
 
-
-class PredictionResponseModel(BaseModel):
+class SinglePredictionResponseModel(BaseModel):
     text: str
     classes: List[ClassResponse]
+
+class SingleContentWarningResponseModel(BaseModel):
+    blob: Optional[str] = None # base64 encoded image
+    classes: List[ClassResponse]
+
+class PredictionResponseModel(BaseModel):
+    toxicity_predictions: List[SinglePredictionResponseModel]
+    content_warnings: List[SingleContentWarningResponseModel]
