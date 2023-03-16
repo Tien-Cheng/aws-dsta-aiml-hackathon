@@ -1,6 +1,6 @@
 from pydantic import validate_arguments
 
-from backend.dependencies.translate import get_translate_client
+from backend.dependencies.aws_ml import get_translate_client
 
 
 @validate_arguments
