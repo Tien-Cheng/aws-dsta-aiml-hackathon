@@ -12,7 +12,7 @@ from backend.dependencies.aws_ml import (get_rekognition_client)
 logger = logging.getLogger(__name__)
 
 
-def predict_image(filename: str, bucket: str, timeout: int = 3600) -> str:
+def predict_image(filename: str, bucket: str) -> str:
     rekognition = get_rekognition_client()
 
     #Text Detection
@@ -37,7 +37,7 @@ def predict_image(filename: str, bucket: str, timeout: int = 3600) -> str:
     return result
 
 
-def moderate_image(filename: str, bucket: str, timeout: int = 3600) -> dict:
+def moderate_image(filename: str, bucket: str) -> dict:
     rekognition = get_rekognition_client()
     #Content Moderation
     moderations= rekognition.detect_moderation_labels(
