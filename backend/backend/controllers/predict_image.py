@@ -37,9 +37,8 @@ def predict_image(filename: str, bucket: str, timeout: int = 3600) -> str:
     return result
 
 
-def moderate_image(filename: str, bucket: str, timeout: int = 3600) -> str:
+def moderate_image(filename: str, bucket: str, timeout: int = 3600) -> dict:
     rekognition = get_rekognition_client()
-
     #Content Moderation
     moderations= rekognition.detect_moderation_labels(
         Image={
@@ -49,7 +48,11 @@ def moderate_image(filename: str, bucket: str, timeout: int = 3600) -> str:
             }
         }
     )
-
-    print(moderations)
-    return moderations
+    results = []
+    for label in moderations["ModerationLabels"]:
+        results.append({
+            "Name": label["Name"],
+            "Score": label["Confidence"],
+        })
+    return results
 
