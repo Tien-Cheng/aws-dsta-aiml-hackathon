@@ -26,8 +26,6 @@ def predict_image(filename: str, bucket: str) -> str:
     )
 
     result = ""
-
-    result += "DETECTED TEXT (OCR): "
     for text_det in detections["TextDetections"]:
         text = text_det["DetectedText"]
         result += text + " "

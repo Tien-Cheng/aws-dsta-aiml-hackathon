@@ -2,6 +2,7 @@ import logging
 from json import loads
 from tempfile import NamedTemporaryFile
 from time import sleep
+from typing import List, Tuple
 from uuid import uuid4
 
 from fastapi import status
@@ -14,9 +15,62 @@ from backend.dependencies.storage import get_s3_client
 logger = logging.getLogger(__name__)
 
 
+def content_moderation_video(
+    filename: str, bucket: str, timeout: int = 3600
+) -> List[dict]:
+    rekognition = get_rekognition_client()
+    # Content Moderation
+    moderations = rekognition.start_content_moderation(
+        Video={
+            "S3Object": {
+                "Bucket": bucket,
+                "Name": filename,
+            }
+        }
+    )
+    job_id = moderations["JobId"]
+    logger.info("Content moderation job started")
+    # Wait for job to finish
+    time_elapsed = 0
+    while True:
+        sleep(5)
+        time_elapsed += 5
+        if time_elapsed > timeout:
+            logger.error("Content moderation job timed out")
+            break
+        job_status = rekognition.get_content_moderation(
+            JobId=job_id,
+            SortBy="TIMESTAMP",
+        )
+        if job_status["JobStatus"] == "IN_PROGRESS":
+            continue
+        elif job_status["JobStatus"] == "SUCCEEDED":
+            break
+        else:
+            logger.error("Content moderation job failed")
+            break
+
+    results = []
+    seen_labels = set()
+    for det in job_status["ModerationLabels"]:
+        label = det["ModerationLabel"]
+        name = label["Name"]
+        if name in seen_labels:
+            continue
+        seen_labels.add(name)
+        results.append(
+            {
+                "Name": name,
+                "Score": label["Confidence"],
+            }
+        )
+    return results
+
+
 def predict_video(filename: str, bucket: str, timeout: int = 3600) -> str:
     rekognition = get_rekognition_client()
     transcribe = get_transcribe_client()
+    # Perform OCR on video
     ocr_job_details = rekognition.start_text_detection(
         Video={
             "S3Object": {
@@ -26,8 +80,8 @@ def predict_video(filename: str, bucket: str, timeout: int = 3600) -> str:
         }
     )
     ocr_job_id = ocr_job_details["JobId"]
-    # Transcribe the video
 
+    # Transcribe the video
     transcript_name = str(uuid4())[:8]
     transcript_job_details = transcribe.start_transcription_job(
         TranscriptionJobName=transcript_name,
