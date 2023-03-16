@@ -8,10 +8,10 @@ from pydantic import validate_arguments
 from backend.models.models import SocialMediaPostModel
 from backend.settings import get_settings
 
-from .social_media import social_media_integrator_factory
-from .upload import upload_file_by_content
 from .predict_audio import predict_audio
 from .predict_video import predict_video
+from .social_media import social_media_integrator_factory
+from .upload import upload_file_by_content
 
 logger = logging.getLogger(__name__)
 
